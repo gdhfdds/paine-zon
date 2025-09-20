@@ -24,9 +24,16 @@ WHITELIST = [
 # ID القناة اللي يرسل فيها الترحيب داخل السيرفر
 WELCOME_CHANNEL_ID = 1287603286782937129  # غيره بالـ ID الصحيح عندك
 
+# تخزين الأعضاء اللي استقبلوا ترحيب بالخاص
+welcomed_members = set()
+
 # عند دخول عضو جديد
 @bot.event
 async def on_member_join(member):
+    # ✅ التحقق إذا أرسلنا لهذا العضو من قبل
+    if member.id in welcomed_members:
+        return
+    
     # رسالة Embed في الخاص
     try:
         embed_dm = discord.Embed(
@@ -36,9 +43,10 @@ async def on_member_join(member):
         )
         embed_dm.set_footer(text="💠 نتمنى لك قضاء وقت ممتع 💠")
         await member.send(embed=embed_dm)
+        welcomed_members.add(member.id)  # تسجيل العضو بعد الإرسال
         print(f"تم إرسال رسالة ترحيب في الخاص لـ {member.name}")
     except:
-        print(f"لا يمكن إرسال رسالة ترحيب لـ {member.name} (DM مغلق)")
+        print(f"❌ لا يمكن إرسال رسالة ترحيب لـ {member.name} (DM مغلق)")
 
     # رسالة Embed في قناة السيرفر
     try:
@@ -89,3 +97,4 @@ if TOKEN:
     bot.run(TOKEN)
 else:
     print("❌ لم يتم العثور على التوكن! تأكد من إضافته في Environment Variables باسم TOKEN.")
+
