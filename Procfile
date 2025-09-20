@@ -1,1 +1,2 @@
-worker: python PAINE.py
+worker: python pain.py
+
